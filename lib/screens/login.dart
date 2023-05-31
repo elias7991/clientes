@@ -1,7 +1,12 @@
+import 'package:clientes/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../utils/helpers.dart';
+import 'home.dart';
+
 class Login extends StatefulWidget {
+  // constructor of the class
   const Login({ super.key });
 
   @override
@@ -9,10 +14,22 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // define of private controllers
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
+  // this executed at the start
   void initState() {
     super.initState();
+  }
+
+  // this executed at the end
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -23,6 +40,7 @@ class _LoginState extends State<Login> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        // prevent possible overflow
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -32,9 +50,10 @@ class _LoginState extends State<Login> {
               Padding(
                 padding: const EdgeInsets.only(left: 50, right: 50, bottom: 25),
                 child: TextField(
+                  controller: _usernameController,
                   inputFormatters: [
                     // regular expression to omit numbers between 0 and 9
-                    FilteringTextInputFormatter.allow(r'[^0-9]')
+                    FilteringTextInputFormatter.deny(RegExp(r'[0-9]'))
                   ],
                   obscureText: false,
                   decoration: const InputDecoration(
@@ -49,11 +68,12 @@ class _LoginState extends State<Login> {
               Padding(
                 padding: const EdgeInsets.only(left: 50, right: 50, bottom: 25),
                 child: TextField(
+                  controller: _passwordController,
                   // for only show numeric keyboard
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     // regular expression to only allow numbers between 0 and 9
-                    FilteringTextInputFormatter.allow(r'[0-9]')
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                   ],
                   // this allow only five characters
                   maxLength: 5,
@@ -69,7 +89,30 @@ class _LoginState extends State<Login> {
               ),
               TextButton(
                 onPressed: () {
-
+                  if (_usernameController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Home()
+                      ),
+                      (route) => false
+                    );
+                  } else {
+                    if (_usernameController.text.isEmpty) {
+                      showMessage(
+                          context: context,
+                          message: Constants.emptyUsername,
+                          action: ActionStatus.fail
+                      );
+                    }
+                    if (_passwordController.text.isEmpty) {
+                      showMessage(
+                          context: context,
+                          message: Constants.emptyPassword,
+                          action: ActionStatus.fail
+                      );
+                    }
+                  }
                 },
                 child: const Text('Login'),
               ),
