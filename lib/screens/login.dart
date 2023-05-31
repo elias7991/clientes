@@ -1,6 +1,8 @@
+import 'package:clientes/providers/login_provider.dart';
 import 'package:clientes/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/helpers.dart';
 import 'home.dart';
@@ -14,6 +16,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // login provider
+  late LoginProvider _loginProvider;
   // define of private controllers
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -22,6 +26,7 @@ class _LoginState extends State<Login> {
   // this executed at the start
   void initState() {
     super.initState();
+    _loginProvider = Provider.of<LoginProvider>(context, listen: false);
   }
 
   // this executed at the end
@@ -90,6 +95,10 @@ class _LoginState extends State<Login> {
               TextButton(
                 onPressed: () {
                   if (_usernameController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+                    _loginProvider.setUser(
+                      isLogged: true,
+                      username: _usernameController.text
+                    );
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
