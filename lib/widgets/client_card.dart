@@ -1,4 +1,4 @@
-import 'package:clientes/screens/typeOfClient.dart';
+import 'package:clientes/screens/type_client.dart';
 import 'package:clientes/widgets/client_avatar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

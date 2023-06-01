@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../main.dart';
 import '../models/Client.dart';
 import '../providers/login_provider.dart';
 import '../utils/helpers.dart';
@@ -53,8 +54,16 @@ class _HomeState extends State<Home> {
           IconButton(
             onPressed: () {
               // logic to logout
+              _loginProvider.setUser(isLogged: false, username: "");
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MyApp()
+                ),
+                (route) => false
+              );
             },
-            icon: const Icon(Icons.exit_to_app),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
