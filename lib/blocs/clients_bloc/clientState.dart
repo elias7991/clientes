@@ -14,7 +14,8 @@ class ClientFail extends ClientState {
 
 class ClientLoaded extends ClientState {
   final List<Client> clients;
-  ClientLoaded({ required this.clients });
+  final int totalPages;
+  ClientLoaded({ required this.clients, required this.totalPages });
 }
 
 class ClientSuccess extends ClientState {}

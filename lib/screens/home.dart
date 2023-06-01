@@ -20,10 +20,11 @@ class _HomeState extends State<Home> {
 
   late LoginProvider _loginProvider;
   int page = 1;
-  int totalPerPage = 0;
+  int totalPages = 0;
   List<Client> clients = [];
   //controller for smartRefresh to pull and get more clients
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+  final ScrollController _scrollController = ScrollController();
 
   @override
   // this executed at the start
@@ -69,53 +70,70 @@ class _HomeState extends State<Home> {
               );
             } else if (state is ClientLoaded) {
               setState(() {
-                clients = state.clients;
-
+                totalPages = state.totalPages;
+                if (page == 1) {
+                  clients = state.clients;
+                } else {
+                  clients = [...clients, ...state.clients];
+                }
               });
             }
           },
-          child: Container(
-            // screen height
-            height: MediaQuery.of(context).size.height,
-            child: BlocBuilder<ClientBloc, ClientState>(
-              builder: (context, state) {
-                if (state is ClientLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is ClientSuccess) {
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: SmartRefresher(
-                          // header refresh
-                          enablePullDown: true,
-                          // footer refresh
-                          enablePullUp: true,
-                          onRefresh: () {
-                            setState(() {
-                              page = 1;
-                            });
-                            BlocProvider.of<ClientBloc>(context).add(GetClients(page: page));
-                          },
-                          controller: _refreshController,
-                          child: SingleChildScrollView(
-                            child: ListView.separated(
-                              separatorBuilder: (BuildContext context, int index) => const Divider(),
-                              itemCount: clients.length,
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemBuilder: (BuildContext context, int index) {
-                                return clientProfile(context, clients[index]);
-                              },
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                } else return Container();
-              },
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Container(
+              // screen height
+              height: MediaQuery.of(context).size.height,
+              child: BlocBuilder<ClientBloc, ClientState>(
+                builder: (context, state) {
+                  if (state is ClientLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is ClientSuccess) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 100),
+                      child: Column(
+                          children: [
+                            Expanded(
+                              child: SmartRefresher(
+                                // header refresh
+                                enablePullDown: true,
+                                // footer refresh
+                                enablePullUp: true,
+                                onRefresh: () {
+                                  setState(() {
+                                    page = 1;
+                                    BlocProvider.of<ClientBloc>(context).add(GetClients(page: page));
+                                  });
+
+                                },
+                                onLoading: () {
+                                  if (page < totalPages) {
+                                    setState(() {
+                                      page++;
+                                      BlocProvider.of<ClientBloc>(context).add(GetClients(page: page));
+                                    });
+                                  }
+                                },
+                                controller: _refreshController,
+                                child: ListView.separated(
+                                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                  itemCount: clients.length,
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return clientProfile(context, clients[index]);
+                                  },
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                    );
+                  } else return Container();
+                },
+              ),
             ),
           ),
         ),

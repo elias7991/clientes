@@ -1,27 +1,29 @@
 import 'package:dio/dio.dart';
-import 'package:clientes/models/Client.dart';
+
+import '../models/Pagination.dart';
 
 final dio = Dio();
 
 class ClientNetwork {
-  late List<Client> clients;
+  late Pagination pagination;
 
-  Future<List<Client>> getClients(int page) async {
+  Future<Pagination> getClients(int page) async {
     final url = "https://reqres.in/api/users?page=$page";
 
     try {
       // await for response
+      /* await dio.get(url)
+        .then((res) => clients = clientsFromJson(res.data["data"]));*/
       await dio.get(url)
-        .then((res) => clients = clientsFromJson(res.data["data"]));
-
+        .then((res) => pagination = paginationFromJson(res.data));
 
 
       // and then returned
-      return clients;
+      return pagination;
 
     } catch (err) {
       // in error cases return an empty list
-      return [];
+      return Pagination(page: 0, data: [], perPage: 0, total: 0, totalPages: 0);
     }
   }
 }
