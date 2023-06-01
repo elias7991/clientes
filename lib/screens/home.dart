@@ -1,5 +1,5 @@
 import 'package:clientes/blocs/clients_bloc/clientBloc.dart';
-import 'package:clientes/widgets/client_profile.dart';
+import 'package:clientes/widgets/client_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +46,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         // return an empty string if the property is not found
-        title: Text('Bienvenido/a $_loginProvider.user.username'),
+        title: Text('Bienvenido/a ${_loginProvider.user.username}'),
         // right button
         actions: [
           IconButton(
@@ -100,16 +100,11 @@ class _HomeState extends State<Home> {
                           },
                           controller: _refreshController,
                           child: SingleChildScrollView(
-                            child: GridView.builder(
+                            child: ListView.separated(
+                              separatorBuilder: (BuildContext context, int index) => const Divider(),
                               itemCount: clients.length,
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 300,
-                                  childAspectRatio: 4/3.2,
-                                  crossAxisSpacing: 20,
-                                  mainAxisSpacing: 20
-                              ),
                               itemBuilder: (BuildContext context, int index) {
                                 return clientProfile(context, clients[index]);
                               },
