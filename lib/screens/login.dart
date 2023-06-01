@@ -92,7 +92,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-              TextButton(
+              TextButton.icon(
                 onPressed: () {
                   if (_usernameController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
                     _loginProvider.setUser(
@@ -123,7 +123,12 @@ class _LoginState extends State<Login> {
                     }
                   }
                 },
-                child: const Text('Login'),
+                icon: const Icon(Icons.login),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white
+                ),
+                label: const Text('Login'),
               ),
             ],
           ),
