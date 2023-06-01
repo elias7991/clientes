@@ -2,15 +2,27 @@ import 'package:clientes/providers/login_provider.dart';
 import 'package:clientes/screens/home.dart';
 import 'package:clientes/screens/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+
+import 'blocs/clients_bloc/clientBloc.dart';
 
 void main() {
   runApp(
+    // define the providers
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider(),),
       ],
-      child: const MyApp(),
+      // define the bloc providers
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<ClientBloc>(
+            create: (BuildContext context) => ClientBloc(),
+          ),
+        ],
+        child: const MyApp()
+      ),
     ),
   );
 }
