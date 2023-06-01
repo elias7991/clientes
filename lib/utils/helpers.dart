@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:clientes/utils/constants.dart';
 import 'package:flutter/material.dart';
 
+// enum to handle the type of alert
 enum ActionStatus {success, fail}
-
+// show alert in the screen
 void showMessage({
   required BuildContext context,
   required String message,
@@ -40,4 +43,53 @@ void showMessage({
       ),
     )
   );
+}
+
+// function to return number between one and "max"
+int randomNumber(int max) {
+  // instance of class
+  Random random = Random();
+
+  return random.nextInt(max);
+}
+
+// enum to handle the types of client
+enum ClientType {active, inactive, blocked, unknown}
+// function to handle the type of client
+ClientType getClientType() {
+  final int number = randomNumber(100);
+
+  if (number < 20) {
+    return ClientType.active;
+  } else if (number%20 == 0) {
+    return ClientType.inactive;
+  } else if (number > 20 && number%20 != 0) {
+    return ClientType.blocked;
+  } else {
+    return ClientType.unknown;
+  }
+
+}
+
+
+String stringType(ClientType type) {
+  late String typeInString;
+
+  switch(type) {
+    case ClientType.active: {
+      typeInString = "Cliente activo";
+      break;
+    }
+    case ClientType.inactive: {
+      typeInString = "Cliente inactivo";
+      break;
+    }
+    case ClientType.blocked: {
+      typeInString = "Cliente bloqueado";
+    }
+    default:
+      typeInString = "Indefinido";
+  }
+
+  return typeInString;
 }

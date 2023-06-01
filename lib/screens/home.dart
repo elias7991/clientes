@@ -94,42 +94,42 @@ class _HomeState extends State<Home> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 100),
                       child: Column(
-                          children: [
-                            Expanded(
-                              child: SmartRefresher(
-                                // header refresh
-                                enablePullDown: true,
-                                // footer refresh
-                                enablePullUp: true,
-                                onRefresh: () {
+                        children: [
+                          Expanded(
+                            child: SmartRefresher(
+                              // header refresh
+                              enablePullDown: true,
+                              // footer refresh
+                              enablePullUp: true,
+                              onRefresh: () {
+                                setState(() {
+                                  page = 1;
+                                  BlocProvider.of<ClientBloc>(context).add(GetClients(page: page));
+                                });
+
+                              },
+                              onLoading: () {
+                                if (page < totalPages) {
                                   setState(() {
-                                    page = 1;
+                                    page++;
                                     BlocProvider.of<ClientBloc>(context).add(GetClients(page: page));
                                   });
-
+                                }
+                              },
+                              controller: _refreshController,
+                              child: ListView.separated(
+                                separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                itemCount: clients.length,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return clientProfile(context, clients[index]);
                                 },
-                                onLoading: () {
-                                  if (page < totalPages) {
-                                    setState(() {
-                                      page++;
-                                      BlocProvider.of<ClientBloc>(context).add(GetClients(page: page));
-                                    });
-                                  }
-                                },
-                                controller: _refreshController,
-                                child: ListView.separated(
-                                  separatorBuilder: (BuildContext context, int index) => const Divider(),
-                                  itemCount: clients.length,
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return clientProfile(context, clients[index]);
-                                  },
-                                ),
                               ),
-                            )
-                          ],
-                        )
+                            ),
+                          )
+                        ],
+                      )
                     );
                   } else return Container();
                 },
