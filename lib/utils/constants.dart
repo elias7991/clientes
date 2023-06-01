@@ -15,6 +15,10 @@ class Constants {
     fontSize: 14,
     fontWeight: FontWeight.w600
   );
+  static const linkTextStyle = TextStyle(
+    decoration: TextDecoration.underline,
+    color: Colors.blue
+  );
 
 
   // static colors
